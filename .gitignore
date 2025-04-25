@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# VSCode
+.vscode/
+
+# Environment
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Pyppeteer/Chrome cache
+.chromium/
+chrome/
+chromium/
+
+# Model and data folders
+Element/
+data/
+!data/.gitkeep
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Minio cache
+.minio/
+
+# Ignore any other secrets
+secrets.*
+
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/

@@ -1,0 +1,15 @@
+services:
+  jobserver:
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    container_name: jobserver
+    environment:
+      - PYTHONPATH=/app
+      # Add your secrets here, e.g.:
+      # - OPENAI_API_KEY=sk-xxxx
+    ports:
+      - "1102:1102"
+    volumes:
+      - .:/app
+    restart: unless-stopped
