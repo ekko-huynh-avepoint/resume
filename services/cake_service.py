@@ -1,4 +1,5 @@
 from src.models.profile import Profile, Experience, Education, Certificate, Language
+from src.services.browserless import browserless_pdf
 from src.utils.file_utils import sanitize_filename, save_link_to_csv, get_data_from_col_from_csv
 from src.models.job_description import JobDescription
 from urllib.parse import quote
@@ -378,41 +379,23 @@ def crawl_job_listings(
     return links[:min(max_jobs, len(links))]
 
 async def html_to_pdf(
-                        link_origin: str, 
-                        url: str, 
-                        output_folder_path: str = "data", 
-                        executablePath: str = "services/chrome/chrome.exe",
-                        prefix_in_s3: str = "Resume/cake/cv-has-info/CV-PDF"
-                      ):
-
+    link_origin: str,
+    url: str,
+    output_folder_path: str = "data",
+):
+    """
+    Convert a webpage to PDF using browserless, saving to output_folder_path.
+    """
     if "?locale=en" not in url:
         url = url + "?locale=en"
 
-    browser = await launch(headless=True, executablePath=executablePath)
-    page = await browser.newPage()
+    # Use sanitized file name for the PDF
+    from src.utils.file_utils import sanitize_filename
+    file_name = sanitize_filename(link_origin)
+    pdf_output_path = browserless_pdf(url, output_folder_path, file_name)
+    print(f"PDF file {file_name} has been saved at {pdf_output_path}.")
 
-    await page.setUserAgent(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
 
-    await page.goto(url, {'waitUntil': 'networkidle2'})
-    path_cv = os.path.join(output_folder_path, sanitize_filename(link_origin))
-
-    print(f"Path: {os.path.abspath(path_cv)}")
-    await page.pdf({
-        'path': os.path.abspath(path_cv),
-        'format': 'A4',
-        'printBackground': True,
-        'margin': {
-            'top': '10mm',    
-            'right': '10mm',  
-            'bottom': '10mm', 
-            'left': '10mm'    
-        }
-    })
-
-    await browser.close()
-    print(f"PDF file {sanitize_filename(link_origin)} has been saved.")
 
 def google_search(query: str, start: str, api_key: str, search_engine_id: str) -> list:
     try:

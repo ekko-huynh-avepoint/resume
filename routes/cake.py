@@ -71,8 +71,7 @@ async def scrape_persons_cake_endpoint(
                 persons_dict.append(person_dict)
                 # save_dict_data_to_txt(person_dict, PROFILE_PERSONS_FILE)
                 # es_client.save_profile(person_dict, index_name=INDEX_FOR_PROFILE_CAKE)
-                await html_to_pdf(link, link_resume, cv_pdf_folder_new,
-                                  prefix_in_s3=PREFIX_FOR_FILE_PDF_PROFILE_CAKE)
+                await html_to_pdf(link, link_resume, cv_pdf_folder_new)
 
         # Run multiple workers concurrently
         await asyncio.gather(*(process_link(link) for link in links))
@@ -106,8 +105,7 @@ async def scrape_one_person_cake_endpoint(
                     person_dict, link_resume = ProfileCake(profile_url, None).crawl_profile()
                     result.append(person_dict)
                     save_dict_data_to_txt(person_dict, PROFILE_PERSONS_FILE)
-                    await html_to_pdf(profile_url, link_resume, cv_pdf_folder,
-                                      prefix_in_s3=PREFIX_FOR_FILE_PDF_PROFILE_CAKE)
+                    await html_to_pdf(profile_url, link_resume, cv_pdf_folder)
                 except Exception:
                     pass
 
